@@ -31,4 +31,9 @@ app.post("/check", async (req, res) => {
   res.json({ result: data.choices[0].message.content });
 });
 
-app.listen(3000, () => console.log("Servidor rodando na porta 3000"));
+// ⬇️ AQUI ESTÁ A CORREÇÃO IMPORTANTE
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
+});
