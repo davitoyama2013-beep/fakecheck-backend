@@ -1,20 +1,24 @@
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 import OpenAI from "openai";
-
-dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+// ⚠️ AQUI ESTÁ A PARTE IMPORTANTE:
+// Força o SDK a usar sua variável OPENAI_API_KEY do Render
 const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY
 });
 
-// Rota principal
-app.post("/verify", async (req, res) => {
+// Rota para teste
+app.get("/", (req, res) => {
+  res.send("API do FakeCheck funcionando! 🚀");
+});
+
+// Rota que seu frontend usa para enviar texto/imagem
+app.post("/analyze", async (req, res) => {
   try {
     const { text } = req.body;
 
@@ -23,23 +27,23 @@ app.post("/verify", async (req, res) => {
       messages: [
         {
           role: "user",
-          content: `Analise se o seguinte conteúdo é verdadeiro ou falso: ${text}`,
-        },
-      ],
+          content: `Analise o seguinte conteúdo: ${text}`
+        }
+      ]
     });
 
-    return res.json({
-      result: response.choices[0].message.content,
+    res.json({
+      result: response.choices[0].message.content
     });
-
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: "Erro no servidor" });
+    console.error("Erro na API:", error);
+    res.status(500).json({ error: "Erro ao analisar o conteúdo." });
   }
 });
 
-// Porta do Render
-const PORT = process.env.PORT || 3000;
+// Porta obrigatória para o Render
+const PORT = process.env.PORT || 10000;
+
 app.listen(PORT, () => {
-  console.log("Servidor rodando na porta " + PORT);
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
