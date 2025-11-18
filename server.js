@@ -7,12 +7,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 🔥 ROTA DE TESTE (Render usa para checar se está vivo)
+// Rota de teste (Render usa)
 app.get("/", (req, res) => {
   res.send("Backend FakeCheck está rodando! 🚀");
 });
 
-// 🔥 ROTA PRINCIPAL /check
+// Rota principal
 app.post("/check", async (req, res) => {
   const { text } = req.body;
 
@@ -21,7 +21,6 @@ app.post("/check", async (req, res) => {
   }
 
   try {
-    // 🔥 AQUI VAI SUA API KEY DO OPENAI
     const apiKey = process.env.OPENAI_API_KEY;
 
     const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -46,12 +45,12 @@ app.post("/check", async (req, res) => {
     });
 
   } catch (err) {
-    console.error("ERRO:", err);
+    console.error("Erro:", err);
     res.status(500).json({ error: "Erro interno no servidor." });
   }
 });
 
-// 🔥 PORTA OBRIGATÓRIA PARA O RENDER FUNCIONAR
+// Porta do Render
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("Servidor rodando na porta " + PORT);
